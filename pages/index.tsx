@@ -4,11 +4,19 @@ import Link from 'next/link';
 import Head from '../components/head';
 import Homeland from '../components/homeland';
 import Overseas from '../components/overseas';
+import { initGA, logPageView } from '../components/googleAnalytics';
 
 import fetch from 'isomorphic-unfetch';
 
 const Home = props => {
   const data = JSON.parse(props.NCPInfo.data);
+  useEffect(() => {
+    if (!(window as any).GA_INITIALIZED) {
+      initGA();
+      (window as any).GA_INITIALIZED = true;
+    }
+    logPageView();
+  }, []);
   const homeData = useMemo(
     () => data.areaTree.find(area => area.name === '中国'),
     []
