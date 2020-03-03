@@ -1,67 +1,50 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 
 import Link from 'next/link';
 import Head from '../components/head';
-import Nav from '../components/nav';
+import Homeland from '../components/homeland';
+import Overseas from '../components/overseas';
 
-const Home = () => {
-  const [date, setDate] = useState(null);
+import fetch from 'isomorphic-unfetch';
 
-  useEffect(() => {
-    async function getDate() {
-      const res = await fetch('/api/date');
-      const newDate = await res.json();
-      setDate(newDate);
-    }
-    getDate();
-  }, []);
+const Home = props => {
+  const data = JSON.parse(props.NCPInfo.data);
+  console.log(data);
+  const homeData = useMemo(
+    () => data.areaTree.find(area => area.name === '中国'),
+    []
+  );
+  const overseasData = useMemo(
+    () => data.areaTree.filter(area => area.name !== '中国'),
+    []
+  );
 
   return (
     <div>
-      <Head title="Home" />
-      <Nav />
-
+      <Head title="每日数据汇总" />
       <div className="hero">
-        <h1 className="title">Welcome to Next!</h1>
-        <p className="description">
-          To get started, edit the <code>pages/index.js</code> or{' '}
-          <code>pages/api/date.js</code> files, then save to reload.
-        </p>
-
-        <p className="row date">
-          The date is:&nbsp;{' '}
-          {date ? (
-            <span>
-              <b>{date.date}</b>
-            </span>
-          ) : (
-            <span className="loading"></span>
-          )}
-        </p>
-
-        <div className="row">
-          <Link href="https://github.com/zeit/next.js#setup">
-            <a className="card">
-              <h3>Getting Started &rarr;</h3>
-              <p>Learn more about Next.js on GitHub and in their examples.</p>
-            </a>
-          </Link>
-          <Link href="https://github.com/zeit/next.js/tree/master/examples">
-            <a className="card">
-              <h3>Examples &rarr;</h3>
-              <p>Find other example boilerplates on the Next.js GitHub.</p>
-            </a>
-          </Link>
-          <Link href="https://github.com/zeit/next.js">
-            <a className="card">
-              <h3>Create Next App &rarr;</h3>
-              <p>Was this tool helpful? Let us know how we can improve it!</p>
-            </a>
-          </Link>
-        </div>
+        <h1 className="title">每日数据汇总</h1>
+        <div>最新更新时间：{data.lastUpdateTime}</div>
+        <Homeland data={homeData} />
+        <Overseas data={overseasData} />
       </div>
+      <style jsx>{`
+        * {
+          height: 100%;
+        }
+      `}</style>
     </div>
   );
+};
+
+Home.getInitialProps = async function() {
+  const res = await fetch(
+    'https://view.inews.qq.com/g2/getOnsInfo?name=disease_h5'
+  );
+  const data = await res.json();
+  return {
+    NCPInfo: data
+  };
 };
 
 export default Home;
