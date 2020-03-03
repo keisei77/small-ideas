@@ -28,38 +28,6 @@ const Head = props => (
     <meta property="og:image" content={props.ogImage || defaultOGImage} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <script
-      type="text/javascript"
-      src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"
-    ></script>
-    <script
-      type="text/javascript"
-      src="https://cdn.jsdelivr.net/npm/echarts-gl/dist/echarts-gl.min.js"
-    ></script>
-    <script
-      type="text/javascript"
-      src="https://cdn.jsdelivr.net/npm/echarts-stat/dist/ecStat.min.js"
-    ></script>
-    <script
-      type="text/javascript"
-      src="https://cdn.jsdelivr.net/npm/echarts/dist/extension/dataTool.min.js"
-    ></script>
-    <script
-      type="text/javascript"
-      src="https://cdn.jsdelivr.net/npm/echarts/map/js/china.js"
-    ></script>
-    <script
-      type="text/javascript"
-      src="https://cdn.jsdelivr.net/npm/echarts/map/js/world.js"
-    ></script>
-    <script
-      type="text/javascript"
-      src="https://api.map.baidu.com/api?v=2.0&ak=CLFbmHB0P9lEc50Nsr2FvSpttxpRBorY"
-    ></script>
-    <script
-      type="text/javascript"
-      src="https://cdn.jsdelivr.net/npm/echarts/dist/extension/bmap.min.js"
-    ></script>
   </NextHead>
 );
 

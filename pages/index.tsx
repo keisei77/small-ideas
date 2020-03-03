@@ -9,7 +9,6 @@ import fetch from 'isomorphic-unfetch';
 
 const Home = props => {
   const data = JSON.parse(props.NCPInfo.data);
-  console.log(data);
   const homeData = useMemo(
     () => data.areaTree.find(area => area.name === '中国'),
     []

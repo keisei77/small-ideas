@@ -29,7 +29,6 @@ interface OverseasProps {
 
 const Overseas = (props: OverseasProps) => {
   const { data: countries } = props;
-  console.log('overseas', countries);
   const getTotalConfirmedCountries = countries
     .map(country => ({
       name: country.name,
