@@ -1,0 +1,8 @@
+{
+  "name": "Small Ideas",
+  "theme_color": "#74d2ff",
+  "background_color": "#ffffff",
+  "display": "browser",
+  "scope": "/",
+  "start_url": "/"
+}
