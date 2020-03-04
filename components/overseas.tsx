@@ -1,4 +1,5 @@
 import React from 'react';
+import classNames from 'classnames';
 
 interface TodayDataType {
   confirm: number;
@@ -47,12 +48,22 @@ const Overseas = (props: OverseasProps) => {
     });
 
   return (
-    <div>
+    <div className="w-64">
       国外累计确诊排行：
-      {getTotalConfirmedCountries.map(country => (
-        <div key={country.name}>
-          {country.name}:{country.total}
-          {country.newIncreaseUpdated && `今日新增：${country.newIncrease}`}
+      {getTotalConfirmedCountries.map((country, index) => (
+        <div
+          className={classNames('border-t border-l border-r border-gray-600', {
+            'border-b': index === getTotalConfirmedCountries.length - 1
+          })}
+          key={country.name}
+        >
+          <div className="flex justify-between">
+            <span className="font-medium">{country.name}</span>
+            <span>{country.total}</span>
+          </div>
+          <div className="flex justify-between">
+            {country.newIncreaseUpdated && `今日新增：${country.newIncrease}`}
+          </div>
         </div>
       ))}
     </div>

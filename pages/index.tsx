@@ -5,7 +5,6 @@ import Head from '../components/head';
 import Homeland from '../components/homeland';
 import Overseas from '../components/overseas';
 import { initGA, logPageView } from '../components/googleAnalytics';
-
 import fetch from 'isomorphic-unfetch';
 
 const Home = props => {
@@ -27,7 +26,7 @@ const Home = props => {
   );
 
   return (
-    <div>
+    <div className="p-4">
       <Head title="每日数据汇总" />
       <div className="hero">
         <h1 className="title">每日数据汇总</h1>

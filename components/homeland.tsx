@@ -1,5 +1,5 @@
 import React from 'react';
-
+import classNames from 'classnames';
 interface TodayDataType {
   confirm: number;
   confirmCuts?: number;
@@ -56,11 +56,20 @@ const Homeland = (props: HomelandProps) => {
     });
 
   return (
-    <div>
+    <div className="w-64">
       国内新增确诊排行：
-      {getTopConfirmedProvinces.map(province => (
-        <div key={province.name}>
-          {province.name}:{province.count}
+      {getTopConfirmedProvinces.map((province, index) => (
+        <div
+          className={classNames(
+            'flex justify-between border-t border-l border-r border-gray-600',
+            {
+              'border-b': index === getTopConfirmedProvinces.length - 1
+            }
+          )}
+          key={province.name}
+        >
+          <span className="font-medium">{province.name}</span>
+          <span>{province.count}</span>
         </div>
       ))}
     </div>
