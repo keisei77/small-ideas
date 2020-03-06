@@ -48,6 +48,8 @@ Home.getInitialProps = async function() {
     'https://view.inews.qq.com/g2/getOnsInfo?name=disease_h5'
   );
   const data = await res.json();
+  // const dingXiangDataP = await fetch('http://localhost:3000/api/ncov');
+  // const dingXiangData = await dingXiangDataP.text();
   return {
     NCPInfo: data
   };
