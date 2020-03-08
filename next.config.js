@@ -1,13 +1,32 @@
 const withOffline = require('next-offline');
+const webpack = require('webpack');
+const nextSourceMaps = require('@zeit/next-source-maps');
 
 const nextConfig = {
+  env: {
+    SENTRY_DSN: process.env.SENTRY_DSN
+  },
   target: 'serverless',
+  webpack: (config, { isServer, buildId }) => {
+    config.plugins.push(
+      new webpack.DefinePlugin({
+        'process.env.SENTRY_RELEASE': JSON.stringify(buildId)
+      })
+    );
+
+    if (!isServer) {
+      config.resolve.alias['@sentry/node'] = '@sentry/browser';
+    }
+
+    return config;
+  },
   transformManifest: manifest => ['/'].concat(manifest), // add the homepage to the cache
   // Trying to set NODE_ENV=production when running yarn dev causes a build-time error so we
   // turn on the SW in dev mode so that we can actually test it
   generateInDevMode: true,
   workboxOpts: {
     swDest: 'static/service-worker.js',
+    maximumFileSizeToCacheInBytes: 4194304,
     runtimeCaching: [
       {
         urlPattern: /^https?.*/,
@@ -28,4 +47,4 @@ const nextConfig = {
   }
 };
 
-module.exports = withOffline(nextConfig);
+module.exports = withOffline(nextSourceMaps(nextConfig));
