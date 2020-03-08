@@ -7,9 +7,9 @@
   },
   "license": "MIT",
   "scripts": {
-    "dev": "cross-env SENTRY_DSN=https://9e9470e3dcf84e459acc08fbbfdd2666@sentry.io/4011659 node server.js",
-    "build": "cross-env SENTRY_DSN=https://9e9470e3dcf84e459acc08fbbfdd2666@sentry.io/4011659 next build",
-    "start": "cross-env SENTRY_DSN=https://9e9470e3dcf84e459acc08fbbfdd2666@sentry.io/4011659 NODE_ENV=production node server.js"
+    "dev": "node server.js",
+    "build": "SENTRY_DSN=https://9e9470e3dcf84e459acc08fbbfdd2666@sentry.io/4011659 next build",
+    "start": "SENTRY_DSN=https://9e9470e3dcf84e459acc08fbbfdd2666@sentry.io/4011659 NODE_ENV=production node server.js"
   },
   "dependencies": {
     "@sentry/browser": "^5.13.2",
