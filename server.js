@@ -6,6 +6,7 @@ const port = parseInt(process.env.PORT, 10) || 3000;
 const dev = process.env.NODE_ENV !== 'production';
 const app = next({ dev });
 const handler = app.getRequestHandler();
+const ncovHandler = require('./pages/api/ncov');
 
 function sessionCookie(req, res, next) {
   const htmlPage =
@@ -43,8 +44,11 @@ app.prepare().then(() => {
   // app.buildId is only available after app.prepare(), hence why we setup here
   const { Sentry } = require('./utils/sentry')(app.buildId);
 
-  express()
-    // This attaches request information to Sentry errors
+  const server = express();
+  // This attaches request information to Sentry errors
+
+  server.get('/ncov', ncovHandler);
+  server
     .use(Sentry.Handlers.requestHandler())
     .use(cookieParser())
     .use(sessionCookie)
