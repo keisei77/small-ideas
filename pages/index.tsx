@@ -55,9 +55,11 @@ Home.getInitialProps = async function() {
     'https://view.inews.qq.com/g2/getOnsInfo?name=disease_h5'
   );
   const NCPInfo = await res.json();
-  const dingXiangDataP = await fetch(
-    'https://small-ideas.herokuapp.com/api/ncov'
-  );
+  const dingXiangSource =
+    process.env.NODE_ENV === 'production'
+      ? 'https://small-ideas.herokuapp.com'
+      : 'http://localhost:3000';
+  const dingXiangDataP = await fetch(`${dingXiangSource}/api/ncov`);
   const dingXiangData = await dingXiangDataP.json();
   return {
     NCPInfo,
