@@ -47,7 +47,6 @@ app.prepare().then(() => {
   const server = express();
   // This attaches request information to Sentry errors
 
-  server.get('/ncov', ncovHandler);
   server
     .use(Sentry.Handlers.requestHandler())
     .use(cookieParser())
@@ -56,12 +55,14 @@ app.prepare().then(() => {
     // Regular next.js request handler
     .use(handler)
     // This handles errors if they are thrown before reaching the app
-    .use(Sentry.Handlers.errorHandler())
-    .listen(port, err => {
-      if (err) {
-        throw err;
-      }
-      // eslint-disable-next-line no-console
-      console.log(`> Ready on http://localhost:${port}`);
-    });
+    .use(Sentry.Handlers.errorHandler());
+
+  server.get('/ncov', ncovHandler);
+  server.listen(port, err => {
+    if (err) {
+      throw err;
+    }
+    // eslint-disable-next-line no-console
+    console.log(`> Ready on http://localhost:${port}`);
+  });
 });
