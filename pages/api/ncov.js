@@ -7,7 +7,7 @@ const parsePage = async () => {
         ? {
             args: ['--no-sandbox'],
             executablePath:
-              './node_modules/puppeteer/.local-chromium/linux-722234/chrome-linux'
+              './node_modules/puppeteer/.local-chromium/linux-722234/chrome-linux/chrome'
           }
         : {};
     const browser = await puppeteer.launch(launchArgs);
