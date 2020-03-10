@@ -57,8 +57,8 @@ Home.getInitialProps = async function() {
   const NCPInfo = await res.json();
   const dingXiangSource =
     process.env.NODE_ENV === 'production'
-      ? 'https://small-ideas.herokuapp.com'
-      : 'http://localhost:3000';
+      ? 'https://micro-backend.herokuapp.com'
+      : 'http://localhost:4000';
   const dingXiangDataP = await fetch(`${dingXiangSource}/api/ncov`);
   const dingXiangData = await dingXiangDataP.json();
   return {
