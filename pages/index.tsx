@@ -8,8 +8,8 @@ import { initGA, logPageView } from '../components/googleAnalytics';
 import fetch from 'isomorphic-unfetch';
 
 const Home = props => {
-  const NCPInfo = JSON.parse(props.NCPInfo.data);
-  const dingXiangData = props.dingXiangData;
+  const NCPInfo = props.data;
+  const lastUpdateTime = NCPInfo[0].lastUpdateTime;
   useEffect(() => {
     if (!(window as any).GA_INITIALIZED) {
       initGA();
@@ -18,15 +18,15 @@ const Home = props => {
     logPageView();
   }, []);
   const homeData = useMemo(
-    () => NCPInfo.areaTree.find(area => area.name === '中国'),
+    () => NCPInfo[0].areaTree.find(area => area.name === '中国'),
     []
   );
   const overseasData = useMemo(
     () =>
-      dingXiangData.overseas.map(country => {
+      NCPInfo[1].foreignList.map(country => {
         return {
-          name: country.provinceName,
-          total: country.currentConfirmedCount
+          name: country.name,
+          total: country.confirm
         };
       }),
     []
@@ -37,7 +37,7 @@ const Home = props => {
       <Head title="每日数据汇总" />
       <div className="hero">
         <h1 className="title">每日数据汇总</h1>
-        <div>最新更新时间：{NCPInfo.lastUpdateTime}</div>
+        <div>最新更新时间：{lastUpdateTime}</div>
         <Homeland data={homeData} />
         <Overseas data={overseasData} />
       </div>
@@ -51,19 +51,17 @@ const Home = props => {
 };
 
 Home.getInitialProps = async function() {
-  const res = await fetch(
-    'https://view.inews.qq.com/g2/getOnsInfo?name=disease_h5'
-  );
-  const NCPInfo = await res.json();
-  const dingXiangSource =
-    process.env.NODE_ENV === 'production'
-      ? 'https://micro-backend.herokuapp.com'
-      : 'http://localhost:4000';
-  const dingXiangDataP = await fetch(`${dingXiangSource}/api/ncov`);
-  const dingXiangData = await dingXiangDataP.json();
+  const data = [];
+  const allData = await Promise.all([
+    fetch('https://view.inews.qq.com/g2/getOnsInfo?name=disease_h5'),
+    fetch('https://view.inews.qq.com/g2/getOnsInfo?name=disease_other')
+  ]);
+  for (let index = 0; index < allData.length; index++) {
+    const res = await allData[index].json();
+    data.push(JSON.parse(res.data));
+  }
   return {
-    NCPInfo,
-    dingXiangData
+    data
   };
 };
 
