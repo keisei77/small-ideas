@@ -17,10 +17,7 @@ const Home = props => {
     }
     logPageView();
   }, []);
-  const homeData = useMemo(
-    () => NCPInfo[0].areaTree.find(area => area.name === '中国'),
-    []
-  );
+  const homeData = useMemo(() => NCPInfo[0], []);
   const overseasData = useMemo(
     () =>
       NCPInfo[1].foreignList.map(country => {

@@ -23,7 +23,7 @@ const Overseas = (props: OverseasProps) => {
   });
 
   return (
-    <div className="w-64">
+    <div className="">
       国外累计确诊排行：
       {getTotalConfirmedCountries.map((country, index) => (
         <div
