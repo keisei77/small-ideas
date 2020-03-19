@@ -1,6 +1,7 @@
 import React from 'react';
 import classNames from 'classnames';
 import styles from './homeland.module.css';
+import Flipper from './flipper';
 interface TodayDataType {
   confirm: number;
   confirmCuts?: number;
@@ -103,6 +104,41 @@ const DataInfoMapping = [
   }
 ];
 
+interface HomelandOverview {
+  chinaAdd: ChinaAdd;
+  chinaTotal: ChinaTotal;
+}
+
+const HomelandOverview = (props: HomelandOverview) => {
+  const { chinaAdd, chinaTotal } = props;
+  return (
+    <div className={styles.dataInfo}>
+      <ul className={styles.ulStyle}>
+        {DataInfoMapping.map(info => (
+          <li key={info.key} className={styles.liStyle}>
+            <div className={styles.compare}>
+              <b>
+                较昨日
+                <em className={styles.emStyle} style={{ color: info.supColor }}>
+                  {chinaAdd[info.key] > 0 ? '+' : ''}
+                  {chinaAdd[info.key]}
+                </em>
+              </b>
+            </div>
+            <strong
+              className={styles.strongStyle}
+              style={{ color: info.color }}
+            >
+              {chinaTotal[info.key]}
+            </strong>
+            <span className={styles.spanStyle}>{info.label}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
+
 const Homeland = (props: HomelandProps) => {
   const { data } = props;
   const { areaTree, chinaAdd, chinaTotal } = data;
@@ -127,33 +163,16 @@ const Homeland = (props: HomelandProps) => {
   return (
     <div className="homeland">
       国内数据概览：
-      <div className={styles.dataInfo}>
-        <ul className={styles.ulStyle}>
-          {DataInfoMapping.map(info => (
-            <li className={styles.liStyle}>
-              <div className={styles.compare}>
-                <b>
-                  较昨日
-                  <em
-                    className={styles.emStyle}
-                    style={{ color: info.supColor }}
-                  >
-                    {chinaAdd[info.key] > 0 ? '+' : ''}
-                    {chinaAdd[info.key]}
-                  </em>
-                </b>
-              </div>
-              <strong
-                className={styles.strongStyle}
-                style={{ color: info.color }}
-              >
-                {chinaTotal[info.key]}
-              </strong>
-              <span className={styles.spanStyle}>{info.label}</span>
-            </li>
-          ))}
-        </ul>
-      </div>
+      <Flipper
+        sceneStyle={{
+          height: 162,
+          margin: '12px 0'
+        }}
+        frontNode={
+          <HomelandOverview chinaAdd={chinaAdd} chinaTotal={chinaTotal} />
+        }
+        backNode={<div></div>}
+      />
       <div>
         国内新增确诊排行：
         {getTopConfirmedProvinces.map((province, index) => (

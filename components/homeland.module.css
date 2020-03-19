@@ -2,7 +2,6 @@
   position: relative;
   text-align: center;
   background: #fff;
-  margin: 12px 0;
 }
 .dataInfo::after {
   position: absolute;
