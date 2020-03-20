@@ -109,10 +109,11 @@ interface HomelandOverview {
   chinaTotal: ChinaTotal;
 }
 
-const HomelandOverview = (props: HomelandOverview) => {
+export const HomelandOverview = (props: HomelandOverview) => {
   const { chinaAdd, chinaTotal } = props;
   return (
     <div className={styles.dataInfo}>
+      <span className={styles.title}>国内数据：</span>
       <ul className={styles.ulStyle}>
         {DataInfoMapping.map(info => (
           <li key={info.key} className={styles.liStyle}>
@@ -163,16 +164,6 @@ const Homeland = (props: HomelandProps) => {
   return (
     <div className="homeland">
       国内数据概览：
-      <Flipper
-        sceneStyle={{
-          height: 162,
-          margin: '12px 0'
-        }}
-        frontNode={
-          <HomelandOverview chinaAdd={chinaAdd} chinaTotal={chinaTotal} />
-        }
-        backNode={<div></div>}
-      />
       <div>
         国内新增确诊排行：
         {getTopConfirmedProvinces.map((province, index) => (

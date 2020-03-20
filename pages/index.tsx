@@ -2,10 +2,11 @@ import React, { useEffect, useState, useMemo } from 'react';
 
 import Link from 'next/link';
 import Head from '../components/head';
-import Homeland from '../components/homeland';
-import Overseas from '../components/overseas';
+import Homeland, { HomelandOverview } from '../components/homeland';
+import Overseas, { OverseasOverview } from '../components/overseas';
 import { initGA, logPageView } from '../components/googleAnalytics';
 import fetch from 'isomorphic-unfetch';
+import Flipper from '../components/flipper';
 
 const Home = props => {
   const NCPInfo = props.data;
@@ -35,6 +36,20 @@ const Home = props => {
       <div className="hero">
         <h1 className="title">每日数据汇总</h1>
         <div>最新更新时间：{lastUpdateTime}</div>
+        <Flipper
+          sceneStyle={{
+            height: 200,
+            margin: '12px 0'
+          }}
+          frontNode={
+            <HomelandOverview
+              chinaAdd={homeData.chinaAdd}
+              chinaTotal={homeData.chinaTotal}
+            />
+          }
+          backNode={<OverseasOverview globalTotal={NCPInfo[1].globalStatis} />}
+        />
+
         <Homeland data={homeData} />
         <Overseas data={overseasData} />
       </div>
