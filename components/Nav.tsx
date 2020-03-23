@@ -6,11 +6,11 @@ interface NavItem {
   link: string;
 }
 
-interface Nav {
+interface NavProps {
   menu: NavItem[];
 }
 
-const Nav = (props: Nav) => {
+const Nav = (props: NavProps) => {
   const { menu } = props;
   return (
     <nav>

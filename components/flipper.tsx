@@ -2,13 +2,13 @@ import React, { useState, useCallback } from 'react';
 import classNames from 'classnames';
 import styles from './flipper.module.css';
 
-interface Flipper {
+interface FlipperProps {
   sceneStyle: React.CSSProperties;
   frontNode: React.ReactNode;
   backNode: React.ReactNode;
 }
 
-const Flipper = (props: Flipper) => {
+const Flipper = (props: FlipperProps) => {
   const { sceneStyle, frontNode, backNode } = props;
   const [isFront, setIsFront] = useState<boolean>(true);
   const flip = useCallback(() => {
