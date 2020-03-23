@@ -1,7 +1,7 @@
 import React from 'react';
 import classNames from 'classnames';
 import styles from './homeland.module.css';
-import Flipper from './flipper';
+import Flipper from './Flipper';
 interface TodayDataType {
   confirm: number;
   confirmCuts?: number;
