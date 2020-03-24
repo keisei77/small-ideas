@@ -20,7 +20,7 @@ const Nav = (props: NavProps) => {
         {menu.map(item => {
           return (
             <li
-              className={classNames('ml-4', {
+              className={classNames('ml-8', {
                 'text-indigo-600': item.link === router.pathname
               })}
               key={item.label}

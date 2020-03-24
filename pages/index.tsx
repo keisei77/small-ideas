@@ -16,7 +16,7 @@ const Home = props => {
   return (
     <div>
       <Head title="每日数据汇总" />
-      <div>Homepage</div>
+      {/* <div>Homepage</div> */}
       <style jsx>{`
         * {
           height: 100%;
