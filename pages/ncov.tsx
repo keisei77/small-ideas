@@ -48,7 +48,7 @@ export async function getServerSideProps() {
   const data = [];
   const allData = await Promise.all([
     fetch('https://view.inews.qq.com/g2/getOnsInfo?name=disease_h5'),
-    fetch('https://view.inews.qq.com/g2/getOnsInfo?name=disease_other')
+    fetch('https://view.inews.qq.com/g2/getOnsInfo?name=disease_foreign')
   ]);
   for (let index = 0; index < allData.length; index++) {
     const res = await allData[index].json();
