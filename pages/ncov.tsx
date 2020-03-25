@@ -21,7 +21,7 @@ const Ncov = props => {
   );
 
   return (
-    <div className="px-4 hero">
+    <div className="pt-4 px-4 hero">
       <h1 className="title">每日数据汇总</h1>
       <div>最新更新时间：{lastUpdateTime}</div>
       <Flipper
