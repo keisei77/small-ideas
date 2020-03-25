@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import fetch from 'isomorphic-unfetch';
+import InfiniteScroller from '../components/InfiniteScroller';
 
 const Weibo = props => {
   const data = props.data;
@@ -17,43 +18,45 @@ const Weibo = props => {
   }, []);
 
   return (
-    <ol className="px-8">
-      {data.map((topic, topicIndex) => (
-        <li className="my-4" key={topic.title}>
-          <div className="text-xl text-indigo-500">{topic.title}</div>
-          {topic.lead ? (
-            <div className="pt-1 text-xs text-gray-500">{topic.lead}</div>
-          ) : null}
-          {topic.feedContent.length ? (
-            topicsExpand[topicIndex] ? (
-              <>
-                {topic.feedContent.map((feed, index) => (
-                  <p
-                    className="odd:bg-yellow-100 even:bg-white pt-1 text-sm text-purple-900"
-                    key={index}
+    <InfiniteScroller>
+      <ol className="px-8">
+        {data.map((topic, topicIndex) => (
+          <li className="my-4" key={topic.title}>
+            <div className="text-xl text-indigo-500">{topic.title}</div>
+            {topic.lead ? (
+              <div className="pt-1 text-xs text-gray-500">{topic.lead}</div>
+            ) : null}
+            {topic.feedContent.length ? (
+              topicsExpand[topicIndex] ? (
+                <>
+                  {topic.feedContent.map((feed, index) => (
+                    <p
+                      className="odd:bg-yellow-100 even:bg-white pt-1 text-sm text-purple-900"
+                      key={index}
+                    >
+                      {feed}
+                    </p>
+                  ))}
+                  <a
+                    className="cursor-pointer"
+                    onClick={() => updateTopicsExpand(topicIndex)}
                   >
-                    {feed}
-                  </p>
-                ))}
+                    收起
+                  </a>
+                </>
+              ) : (
                 <a
                   className="cursor-pointer"
                   onClick={() => updateTopicsExpand(topicIndex)}
                 >
-                  收起
+                  展开
                 </a>
-              </>
-            ) : (
-              <a
-                className="cursor-pointer"
-                onClick={() => updateTopicsExpand(topicIndex)}
-              >
-                展开
-              </a>
-            )
-          ) : null}
-        </li>
-      ))}
-    </ol>
+              )
+            ) : null}
+          </li>
+        ))}
+      </ol>
+    </InfiniteScroller>
   );
 };
 
