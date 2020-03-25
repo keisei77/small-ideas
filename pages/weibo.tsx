@@ -1,10 +1,12 @@
 import React, { useState, useCallback } from 'react';
+import ReactDOM from 'react-dom';
 import fetch from 'isomorphic-unfetch';
 import InfiniteScroller from '../components/InfiniteScroller';
 
 const Weibo = props => {
   const data = props.data;
-
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [fullData, setFullData] = useState(data);
   const [topicsExpand, setTopicsExpand] = useState<boolean[]>(
     Array(data.length).fill(false)
   );
@@ -17,10 +19,22 @@ const Weibo = props => {
     );
   }, []);
 
+  const loadingMore = useCallback(async () => {
+    const nextPageData = await fetch(
+      `https://micro-backend.herokuapp.com/api/weibo?page=${currentPage + 1}`
+    );
+    const nextData = await nextPageData.json();
+
+    ReactDOM.unstable_batchedUpdates(() => {
+      setFullData(prevData => [...prevData, ...nextData]);
+      setCurrentPage(prevPage => prevPage + 1);
+    });
+  }, [currentPage]);
+
   return (
-    <InfiniteScroller>
+    <InfiniteScroller loadingMore={loadingMore}>
       <ol className="px-8">
-        {data.map((topic, topicIndex) => (
+        {fullData.map((topic, topicIndex) => (
           <li className="my-4" key={topic.title}>
             <div className="text-xl text-indigo-500">{topic.title}</div>
             {topic.lead ? (
