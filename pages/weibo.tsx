@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import ReactDOM from 'react-dom';
 import fetch from 'isomorphic-unfetch';
-import InfiniteScroller from '../components/InfiniteScroller';
+import InfiniteScroll from 'react-infinite-scroll-component';
 
 const Weibo = props => {
   const data = props.data;
@@ -10,6 +10,7 @@ const Weibo = props => {
   const [topicsExpand, setTopicsExpand] = useState<boolean[]>(
     Array(data.length).fill(false)
   );
+  const [loading, setLoading] = useState<boolean>(false);
 
   const updateTopicsExpand = useCallback(topicIndex => {
     setTopicsExpand(
@@ -20,11 +21,12 @@ const Weibo = props => {
   }, []);
 
   const loadingMore = useCallback(async () => {
+    setLoading(true);
     const nextPageData = await fetch(
       `https://micro-backend.herokuapp.com/api/weibo?page=${currentPage + 1}`
     );
     const nextData = await nextPageData.json();
-
+    setLoading(false);
     ReactDOM.unstable_batchedUpdates(() => {
       setFullData(prevData => [...prevData, ...nextData]);
       setCurrentPage(prevPage => prevPage + 1);
@@ -32,7 +34,12 @@ const Weibo = props => {
   }, [currentPage]);
 
   return (
-    <InfiniteScroller loadingMore={loadingMore}>
+    <InfiniteScroll
+      next={loadingMore}
+      hasMore={fullData.length < 50}
+      loader={loading ? <h3>Loading...</h3> : null}
+      dataLength={fullData.length}
+    >
       <ol className="px-8">
         {fullData.map((topic, topicIndex) => (
           <li className="my-4" key={topic.title}>
@@ -70,7 +77,7 @@ const Weibo = props => {
           </li>
         ))}
       </ol>
-    </InfiniteScroller>
+    </InfiniteScroll>
   );
 };
 
