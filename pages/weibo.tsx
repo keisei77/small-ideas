@@ -1,35 +1,42 @@
 import React, { useState, useCallback } from 'react';
 import ReactDOM from 'react-dom';
 import fetch from 'isomorphic-unfetch';
-import InfiniteScroll from 'react-infinite-scroll-component';
-import { pseudoRandomBytes } from 'crypto';
+import getConfig from 'next/config';
 
+const { publicRuntimeConfig } = getConfig();
 const Weibo = props => {
   const data = props.data;
   const [fullData, setFullData] = useState(data);
   const [topicsExpand, setTopicsExpand] = useState<boolean[]>(
     Array(data.length).fill(false)
   );
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean[]>(
+    Array(data.length).fill(false)
+  );
 
-  const updateTopicsExpand = useCallback(async (expanded, link, topicIndex) => {
-    if (!expanded) {
-      await loadWeiboDetail(link, topicIndex);
-    }
-    setTopicsExpand(
-      prevExpand => (
-        (prevExpand[topicIndex] = !prevExpand[topicIndex]), [...prevExpand]
-      )
-    );
-  }, []);
+  const updateTopicsExpand = useCallback(
+    async (link, topicIndex) => {
+      if (!fullData[topicIndex].feedContent) {
+        await loadWeiboDetail(link, topicIndex);
+      }
+      setTopicsExpand(
+        prevExpand => (
+          (prevExpand[topicIndex] = !prevExpand[topicIndex]), [...prevExpand]
+        )
+      );
+    },
+    [fullData]
+  );
 
   const loadWeiboDetail = useCallback(async (link, index) => {
-    setLoading(true);
+    setLoading(prevLoading => ((prevLoading[index] = true), [...prevLoading]));
     const weiboDetailData = await fetch(
-      `https://micro-backend.herokuapp.com/api/weibo-detail?link=${link}`
+      `${publicRuntimeConfig.baseAPI}/weibo-detail?link=${encodeURIComponent(
+        link
+      )}`
     );
     const weiboDetail = await weiboDetailData.json();
-    setLoading(false);
+    setLoading(prevLoading => ((prevLoading[index] = false), [...prevLoading]));
 
     ReactDOM.unstable_batchedUpdates(() => {
       setFullData(prevData =>
@@ -49,7 +56,7 @@ const Weibo = props => {
       {fullData.map((topic, topicIndex) => (
         <li className="my-4" key={topic.title}>
           <div className="text-xl text-indigo-500">{topic.title}</div>
-          {loading ? (
+          {loading[topicIndex] ? (
             <span>加载中...</span>
           ) : (
             <>
@@ -68,32 +75,25 @@ const Weibo = props => {
                       </p>
                     ))}
                   </>
-                ) : (
-                  <span>收起</span>
-                )
+                ) : null
               ) : null}
             </>
           )}
 
           {topicsExpand[topicIndex] ? (
             <>
-              {topic.feedContent.map((feed, index) => (
-                <p
-                  className="odd:bg-yellow-100 even:bg-white pt-1 text-sm text-purple-900"
-                  key={index}
-                >
-                  {feed}
-                </p>
-              ))}
+              {topic.feedContent &&
+                topic.feedContent.map((feed, index) => (
+                  <p
+                    className="odd:bg-yellow-100 even:bg-white pt-1 text-sm text-purple-900"
+                    key={index}
+                  >
+                    {feed}
+                  </p>
+                ))}
               <a
                 className="cursor-pointer"
-                onClick={() =>
-                  updateTopicsExpand(
-                    topicsExpand[topicIndex],
-                    topic.link,
-                    topicIndex
-                  )
-                }
+                onClick={() => updateTopicsExpand(topic.link, topicIndex)}
               >
                 收起
               </a>
@@ -101,13 +101,7 @@ const Weibo = props => {
           ) : (
             <a
               className="cursor-pointer"
-              onClick={() =>
-                updateTopicsExpand(
-                  topicsExpand[topicIndex],
-                  topic.link,
-                  topicIndex
-                )
-              }
+              onClick={() => updateTopicsExpand(topic.link, topicIndex)}
             >
               展开
             </a>

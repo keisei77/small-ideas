@@ -26,6 +26,13 @@ const nextConfig = {
         }
       }
     ]
+  },
+  publicRuntimeConfig: {
+    // Will be available on both server and client
+    baseAPI:
+      process.env.NODE_ENV === 'production'
+        ? 'https://micro-backend.herokuapp.com/api'
+        : 'http://localhost:4000/api'
   }
 };
 
