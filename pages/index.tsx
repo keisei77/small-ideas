@@ -4,6 +4,7 @@ import Link from 'next/link';
 import Head from '../components/Head';
 
 import { initGA, logPageView } from '../components/googleAnalytics';
+import { Quotes } from '../components/Quotes';
 
 const Home = props => {
   useEffect(() => {
@@ -16,7 +17,7 @@ const Home = props => {
   return (
     <div>
       <Head title="每日数据汇总" />
-      {/* <div>Homepage</div> */}
+      <Quotes />
       <style jsx>{`
         * {
           height: 100%;
