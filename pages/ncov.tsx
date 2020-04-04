@@ -4,17 +4,17 @@ import Overseas, { OverseasOverview } from '../components/Overseas';
 import fetch from 'isomorphic-unfetch';
 import Flipper from '../components/Flipper';
 
-const Ncov = props => {
+const Ncov = (props) => {
   const NCPInfo = props.data;
   const lastUpdateTime = NCPInfo[0].lastUpdateTime;
 
   const homeData = useMemo(() => NCPInfo[0], []);
   const overseasData = useMemo(
     () =>
-      NCPInfo[1].foreignList.map(country => {
+      NCPInfo[2].map((country) => {
         return {
           name: country.name,
-          total: country.confirm
+          total: country.confirm,
         };
       }),
     []
@@ -27,7 +27,7 @@ const Ncov = props => {
       <Flipper
         sceneStyle={{
           height: 200,
-          margin: '12px 0'
+          margin: '12px 0',
         }}
         frontNode={
           <HomelandOverview
@@ -48,11 +48,18 @@ export async function getServerSideProps() {
   const data = [];
   const allData = await Promise.all([
     fetch('https://view.inews.qq.com/g2/getOnsInfo?name=disease_h5'),
-    fetch('https://view.inews.qq.com/g2/getOnsInfo?name=disease_foreign')
+    fetch('https://view.inews.qq.com/g2/getOnsInfo?name=disease_foreign'),
+    fetch(
+      'https://api.inews.qq.com/newsqa/v1/automation/foreign/country/ranklist'
+    ),
   ]);
   for (let index = 0; index < allData.length; index++) {
     const res = await allData[index].json();
-    data.push(JSON.parse(res.data));
+    if (typeof res.data === 'string') {
+      data.push(JSON.parse(res.data));
+    } else {
+      data.push(res.data);
+    }
   }
   return { props: { data } };
 }

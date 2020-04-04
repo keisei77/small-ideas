@@ -1,7 +1,10 @@
 import React from 'react';
 import classNames from 'classnames';
 import styles from './overseas.module.css';
-
+let bizCharts;
+if (process.browser) {
+  bizCharts = require('bizcharts');
+}
 interface DataType {
   name: string;
   total: number;
@@ -31,26 +34,26 @@ const DataInfoMapping = [
     key: 'nowConfirm',
     label: '现存确诊',
     color: 'rgb(247, 76, 49)',
-    supColor: 'rgb(247, 76, 49)'
+    supColor: 'rgb(247, 76, 49)',
   },
   {
     key: 'confirm',
     label: '累计确诊',
     color: 'rgb(247, 130, 7)',
-    supColor: 'rgb(247, 130, 7)'
+    supColor: 'rgb(247, 130, 7)',
   },
   {
     key: 'heal',
     label: '累计治愈',
     color: 'rgb(40, 183, 163)',
-    supColor: 'rgb(40, 183, 163)'
+    supColor: 'rgb(40, 183, 163)',
   },
   {
     key: 'dead',
     label: '累计死亡',
     color: 'rgb(93, 112, 146)',
-    supColor: 'rgb(93, 112, 146)'
-  }
+    supColor: 'rgb(93, 112, 146)',
+  },
 ];
 
 export const OverseasOverview = (props: OverseasOverview) => {
@@ -59,7 +62,7 @@ export const OverseasOverview = (props: OverseasOverview) => {
     <div className={styles.dataInfo}>
       <span className={styles.title}>全球数据:</span>
       <ul className={styles.ulStyle}>
-        {DataInfoMapping.map(info => (
+        {DataInfoMapping.map((info) => (
           <li key={info.key} className={styles.liStyle}>
             <div className={styles.compare}>
               <b>
@@ -86,32 +89,40 @@ export const OverseasOverview = (props: OverseasOverview) => {
 
 const Overseas = (props: OverseasProps) => {
   const { data: countries } = props;
-  const getTotalConfirmedCountries = countries.sort((a, b) => {
-    if (a.total - b.total > 0) {
-      return -1;
-    }
-    if (a.total - b.total === 0) {
-      return 0;
-    }
-    return 1;
-  });
+  const getTotalConfirmedCountries = countries
+    .sort((a, b) => {
+      if (a.total - b.total > 0) {
+        return -1;
+      }
+      if (a.total - b.total === 0) {
+        return 0;
+      }
+      return 1;
+    })
+    .slice(0, 10);
+
+  if (!process.browser) {
+    return null;
+  }
+
+  const { Chart, Coord, Tooltip, Legend, Geom } = bizCharts;
 
   return (
     <div className="">
-      国外累计确诊排行：
-      {getTotalConfirmedCountries.map((country, index) => (
-        <div
-          className={classNames('border-t border-l border-r border-gray-600', {
-            'border-b': index === getTotalConfirmedCountries.length - 1
-          })}
-          key={country.name}
-        >
-          <div className="flex justify-between">
-            <span className="font-medium">{country.name}</span>
-            <span>{country.total}</span>
-          </div>
-        </div>
-      ))}
+      国外累计确诊：
+      <Chart height={320} data={getTotalConfirmedCountries} forceFit>
+        <Coord type="polar" innerRadius={0.05} />
+        <Tooltip />
+        <Geom
+          type="interval"
+          color="name"
+          position="name*total"
+          style={{
+            lineWidth: 1,
+            stroke: '#fff',
+          }}
+        />
+      </Chart>
     </div>
   );
 };
