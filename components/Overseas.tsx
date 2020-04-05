@@ -1,13 +1,14 @@
 import React from 'react';
-import classNames from 'classnames';
 import styles from './overseas.module.css';
 let bizCharts;
+let DataSet;
 if (process.browser) {
   bizCharts = require('bizcharts');
+  DataSet = require('@antv/data-set');
 }
 interface DataType {
   name: string;
-  total: number;
+  confirm: number;
 }
 
 interface OverseasProps {
@@ -91,10 +92,10 @@ const Overseas = (props: OverseasProps) => {
   const { data: countries } = props;
   const getTotalConfirmedCountries = countries
     .sort((a, b) => {
-      if (a.total - b.total > 0) {
+      if (a.confirm - b.confirm > 0) {
         return -1;
       }
-      if (a.total - b.total === 0) {
+      if (a.confirm - b.confirm === 0) {
         return 0;
       }
       return 1;
@@ -105,22 +106,80 @@ const Overseas = (props: OverseasProps) => {
     return null;
   }
 
-  const { Chart, Coord, Tooltip, Legend, Geom } = bizCharts;
+  const { Chart, Geom, Axis, Tooltip, Coord, Legend } = bizCharts;
+  const { DataView } = DataSet;
+
+  const dv = new DataView();
+  dv.source(getTotalConfirmedCountries)
+    .transform({
+      type: 'map',
+      callback(row) {
+        row['dead'] *= -1;
+        row['heal'] *= -1;
+        return row;
+      },
+    })
+    .transform({
+      type: 'fold',
+      fields: ['dead', 'heal', 'confirm'],
+      key: 'opinion',
+      value: 'value',
+    })
+    .transform({
+      type: 'sort',
+      callback(a, b) {
+        return b.confirm - a.confirm;
+      },
+    });
+  const colorMap = {
+    dead: '#5d7092',
+    heal: '#28b7a3',
+    confirm: '#f74c31',
+  };
+
+  const labelMapping = {
+    dead: '累计死亡',
+    heal: '累计治愈',
+    confirm: '累计确诊',
+  };
 
   return (
     <div className="">
       国外累计确诊：
-      <Chart height={320} data={getTotalConfirmedCountries} forceFit>
-        <Coord type="polar" innerRadius={0.05} />
-        <Tooltip />
-        <Geom
-          type="interval"
-          color="name"
-          position="name*total"
-          style={{
-            lineWidth: 1,
-            stroke: '#fff',
+      <Chart padding="auto" data={dv} forceFit>
+        <Axis name="name" title={null} labelOffset={10} />
+        <Axis
+          name="value"
+          title={null}
+          tickLine={null}
+          position="right"
+          formatter={function (val) {
+            return val + '%';
           }}
+        />
+        <Coord transpose />
+        <Tooltip
+          itemTpl={`<li data-index={index}>
+                      <span style="background-color:{color};width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:8px;"></span>
+                      {name}: {value}
+                    </li>`}
+        />
+        <Legend
+          itemFormatter={(val) => {
+            return labelMapping[val];
+          }}
+        />
+        <Geom
+          type="intervalStack"
+          position="name*value"
+          color={[
+            'opinion',
+            function (opinion) {
+              return colorMap[opinion];
+            },
+          ]}
+          shape="smooth"
+          opacity={0.8}
         />
       </Chart>
     </div>

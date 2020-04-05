@@ -9,16 +9,7 @@ const Ncov = (props) => {
   const lastUpdateTime = NCPInfo[0].lastUpdateTime;
 
   const homeData = useMemo(() => NCPInfo[0], []);
-  const overseasData = useMemo(
-    () =>
-      NCPInfo[2].map((country) => {
-        return {
-          name: country.name,
-          total: country.confirm,
-        };
-      }),
-    []
-  );
+  const overseasData = useMemo(() => NCPInfo[2], []);
 
   return (
     <div className="pt-4 px-4 hero">
