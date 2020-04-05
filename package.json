@@ -18,7 +18,7 @@
     "classnames": "^2.2.6",
     "cross-env": "^7.0.2",
     "isomorphic-unfetch": "^3.0.0",
-    "next": "^9.2.2",
+    "next": "^9.3.2",
     "next-offline": "^5.0.0",
     "postcss-import": "^12.0.1",
     "react": "^16.13.0",
