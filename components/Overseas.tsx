@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import styles from './overseas.module.css';
 let bizCharts;
 let DataSet;
@@ -128,7 +128,7 @@ const Overseas = (props: OverseasProps) => {
     .transform({
       type: 'sort',
       callback(a, b) {
-        return b.confirm - a.confirm;
+        return a.confirm - b.confirm;
       },
     });
   const colorMap = {
@@ -142,6 +142,27 @@ const Overseas = (props: OverseasProps) => {
     heal: '累计治愈',
     confirm: '累计确诊',
   };
+
+  const getTooltipContent = useCallback((title, items) => {
+    const liContent = items
+      .map((item, index) => {
+        return `<li style="margin: 0px 0px 4px; list-style-type: none; padding: 0px;" data-index={${index}}>
+      <span style="background-color:${
+        item.color
+      };width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:8px;"></span>
+      ${
+        labelMapping[item.name]
+      }<span class="g2-tooltip-value" style="display: inline-block; float: right; margin-left: 30px;">${
+          item.value
+        }</span>
+      </li>`;
+      })
+      .join('');
+    return `<div class="g2-tooltip" style="position: absolute;z-index: 8;transition: visibility 0.2s cubic-bezier(0.23, 1, 0.32, 1) 0s, left 0.4s cubic-bezier(0.23, 1, 0.32, 1) 0s, top 0.4s cubic-bezier(0.23, 1, 0.32, 1) 0s;background-color: rgba(255, 255, 255, 0.9);box-shadow: rgb(174, 174, 174) 0px 0px 10px;border-radius: 3px;color: rgb(87, 87, 87);font-size: 12px;line-height: 20px;padding: 10px 10px 6px;">
+              <div class="g2-tooltip-title" style="margin-bottom: 4px;">${title}</div>
+              <ul style="margin: 0px; list-style-type: none; padding: 0px;">${liContent}</ul>
+            </div>`;
+  }, []);
 
   return (
     <div className="">
@@ -158,12 +179,7 @@ const Overseas = (props: OverseasProps) => {
           }}
         />
         <Coord transpose />
-        <Tooltip
-          itemTpl={`<li data-index={index}>
-                      <span style="background-color:{color};width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:8px;"></span>
-                      {name}: {value}
-                    </li>`}
-        />
+        <Tooltip useHtml htmlContent={getTooltipContent} />
         <Legend
           itemFormatter={(val) => {
             return labelMapping[val];
