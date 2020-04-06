@@ -2,9 +2,12 @@ import React, { useState, useCallback } from 'react';
 import ReactDOM from 'react-dom';
 import fetch from 'isomorphic-unfetch';
 import getConfig from 'next/config';
+import Loading from '../components/Loading';
+import ChevronRight from '../components/ChevronRight';
+import ChevronDown from '../components/ChevronDown';
 
 const { publicRuntimeConfig } = getConfig();
-const Weibo = props => {
+const Weibo = (props) => {
   const data = props.data;
   const [fullData, setFullData] = useState(data);
   const [topicsExpand, setTopicsExpand] = useState<boolean[]>(
@@ -20,7 +23,7 @@ const Weibo = props => {
         await loadWeiboDetail(link, topicIndex);
       }
       setTopicsExpand(
-        prevExpand => (
+        (prevExpand) => (
           (prevExpand[topicIndex] = !prevExpand[topicIndex]), [...prevExpand]
         )
       );
@@ -29,17 +32,21 @@ const Weibo = props => {
   );
 
   const loadWeiboDetail = useCallback(async (link, index) => {
-    setLoading(prevLoading => ((prevLoading[index] = true), [...prevLoading]));
+    setLoading(
+      (prevLoading) => ((prevLoading[index] = true), [...prevLoading])
+    );
     const weiboDetailData = await fetch(
       `${publicRuntimeConfig.baseAPI}/weibo-detail?link=${encodeURIComponent(
         link
       )}`
     );
     const weiboDetail = await weiboDetailData.json();
-    setLoading(prevLoading => ((prevLoading[index] = false), [...prevLoading]));
+    setLoading(
+      (prevLoading) => ((prevLoading[index] = false), [...prevLoading])
+    );
 
     ReactDOM.unstable_batchedUpdates(() => {
-      setFullData(prevData =>
+      setFullData((prevData) =>
         prevData.map((data, idx) => {
           if (idx === index) {
             return { ...data, ...weiboDetail };
@@ -52,12 +59,18 @@ const Weibo = props => {
   }, []);
 
   return (
-    <ol className="px-8">
+    <ol className="bg-gray-100 inline-block px-8 w-full">
       {fullData.map((topic, topicIndex) => (
         <li className="my-4" key={topic.title}>
-          <div className="text-xl text-indigo-500">{topic.title}</div>
+          <a
+            onClick={() => updateTopicsExpand(topic.link, topicIndex)}
+            className="cursor-pointer text-xl text-indigo-500 flex items-center justify-between"
+          >
+            <span>{topic.title}</span>
+            {topicsExpand[topicIndex] ? <ChevronDown /> : <ChevronRight />}
+          </a>
           {loading[topicIndex] ? (
-            <span>加载中...</span>
+            <Loading />
           ) : (
             <>
               {topic.lead ? (
@@ -68,7 +81,7 @@ const Weibo = props => {
                   <>
                     {topic.feedContent.map((feed, index) => (
                       <p
-                        className="odd:bg-yellow-100 even:bg-white pt-1 text-sm text-purple-900"
+                        className="mt-2 rounded-sm border bg-white p-4 text-purple-900 text-sm"
                         key={index}
                       >
                         {feed}
@@ -78,33 +91,6 @@ const Weibo = props => {
                 ) : null
               ) : null}
             </>
-          )}
-
-          {topicsExpand[topicIndex] ? (
-            <>
-              {topic.feedContent &&
-                topic.feedContent.map((feed, index) => (
-                  <p
-                    className="odd:bg-yellow-100 even:bg-white pt-1 text-sm text-purple-900"
-                    key={index}
-                  >
-                    {feed}
-                  </p>
-                ))}
-              <a
-                className="cursor-pointer"
-                onClick={() => updateTopicsExpand(topic.link, topicIndex)}
-              >
-                收起
-              </a>
-            </>
-          ) : (
-            <a
-              className="cursor-pointer"
-              onClick={() => updateTopicsExpand(topic.link, topicIndex)}
-            >
-              展开
-            </a>
           )}
         </li>
       ))}
