@@ -5,6 +5,7 @@ import getConfig from 'next/config';
 import Loading from '../components/Loading';
 import ChevronRight from '../components/ChevronRight';
 import ChevronDown from '../components/ChevronDown';
+import WeiboCard from '../components/WeiboCard';
 
 const { publicRuntimeConfig } = getConfig();
 const Weibo = (props) => {
@@ -80,12 +81,7 @@ const Weibo = (props) => {
                 topicsExpand[topicIndex] ? (
                   <>
                     {topic.feedContent.map((feed, index) => (
-                      <p
-                        className="mt-2 rounded-sm border bg-white p-4 text-purple-900 text-sm"
-                        key={index}
-                      >
-                        {feed}
-                      </p>
+                      <WeiboCard key={index} feed={feed} />
                     ))}
                   </>
                 ) : null
@@ -99,9 +95,7 @@ const Weibo = (props) => {
 };
 
 export async function getServerSideProps() {
-  const weiboDataResponse = await fetch(
-    'https://micro-backend.herokuapp.com/api/weibo'
-  );
+  const weiboDataResponse = await fetch(`${publicRuntimeConfig.baseAPI}/weibo`);
 
   const weiboData = await weiboDataResponse.json();
 
