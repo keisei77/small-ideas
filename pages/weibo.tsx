@@ -81,7 +81,7 @@ const Weibo = (props) => {
                 topicsExpand[topicIndex] ? (
                   <>
                     {topic.feedContent.map((feed, index) => (
-                      <WeiboCard key={index} feed={feed} />
+                      <WeiboCard key={index} referer={topic.link} feed={feed} />
                     ))}
                   </>
                 ) : null
