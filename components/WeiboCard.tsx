@@ -2,7 +2,7 @@ import React from 'react';
 import getConfig from 'next/config';
 interface FeedMedia {
   content: string;
-  images?: string[];
+  images?: { thumbSrc: string; originSrc: string }[];
 }
 
 interface WeiboCard {
@@ -16,10 +16,13 @@ const WeiboCard = (props: WeiboCard) => {
     <p className="mt-2 rounded-sm border bg-white p-4 text-purple-900 text-sm">
       {feed.content}
       {(feed.images || []).map(
-        (src) =>
-          src && (
+        ({ thumbSrc, originSrc }) =>
+          originSrc && (
             <img
-              src={`${publicRuntimeConfig.weiboImg}?src=${src}&referer=${referer}`}
+              onError={(ev) => {
+                (ev.target as any).src = thumbSrc;
+              }}
+              src={`${publicRuntimeConfig.weiboImg}?src=${originSrc}&referer=${referer}`}
               alt="media image"
             />
           )
