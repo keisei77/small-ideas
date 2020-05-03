@@ -3,6 +3,7 @@ import getConfig from 'next/config';
 interface FeedMedia {
   content: string;
   images?: { thumbSrc: string; originSrc: string }[];
+  video?: string;
 }
 
 interface WeiboCard {
@@ -26,6 +27,14 @@ const WeiboCard = (props: WeiboCard) => {
               alt="media image"
             />
           )
+      )}
+      {feed.video && (
+        <video controls>
+          <source
+            src={`${publicRuntimeConfig.weiboImg}?src=${feed.video}&referer=${referer}`}
+            type="video/mp4"
+          ></source>
+        </video>
       )}
     </p>
   );
