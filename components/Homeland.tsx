@@ -171,12 +171,17 @@ const Homeland = (props: HomelandProps) => {
     return null;
   }
 
-  const { Chart, Coord, Tooltip, Legend, Geom } = bizCharts;
+  const { Chart, Coord, Tooltip, Legend, Geom, Label } = bizCharts;
 
   return (
     <div className="homeland">
       国内新增确诊：
-      <Chart height={320} data={getTopConfirmedProvinces} forceFit>
+      <Chart
+        height={320}
+        data={getTopConfirmedProvinces}
+        padding={[80, 100, 80, 80]}
+        forceFit
+      >
         <Coord type="polar" innerRadius={0.05} />
         <Tooltip />
         <Geom
@@ -187,7 +192,14 @@ const Homeland = (props: HomelandProps) => {
             lineWidth: 1,
             stroke: '#fff',
           }}
-        />
+        >
+          <Label
+            content="percent"
+            formatter={(val, item) => {
+              return item.point.name + ': ' + item.point.count;
+            }}
+          />
+        </Geom>
       </Chart>
     </div>
   );

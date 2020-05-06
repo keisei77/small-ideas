@@ -93,14 +93,14 @@ const Overseas = (props: OverseasProps) => {
   const getTotalConfirmedCountries = countries
     .sort((a, b) => {
       if (a.confirm - b.confirm > 0) {
-        return -1;
+        return 1;
       }
       if (a.confirm - b.confirm === 0) {
         return 0;
       }
-      return 1;
+      return -1;
     })
-    .slice(0, 10);
+    .slice(-10);
 
   if (!process.browser) {
     return null;
