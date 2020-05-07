@@ -195,6 +195,7 @@ const Homeland = (props: HomelandProps) => {
         >
           <Label
             content="percent"
+            autoRotate={false}
             formatter={(val, item) => {
               return item.point.name + ': ' + item.point.count;
             }}
