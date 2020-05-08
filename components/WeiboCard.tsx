@@ -24,7 +24,7 @@ const WeiboCard = (props: WeiboCard) => {
                 (ev.target as any).src = thumbSrc;
               }}
               src={`${publicRuntimeConfig.weiboImg}?src=${originSrc}&referer=${referer}`}
-              alt="media image"
+              alt={feed.content}
             />
           )
       )}
