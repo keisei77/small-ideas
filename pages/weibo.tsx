@@ -78,13 +78,11 @@ const Weibo = (props) => {
                 <div className="pt-1 text-xs text-gray-500">{topic.lead}</div>
               ) : null}
               {topic.feedContent && topic.feedContent.length ? (
-                topicsExpand[topicIndex] ? (
-                  <>
-                    {topic.feedContent.map((feed, index) => (
-                      <WeiboCard key={index} referer={topic.link} feed={feed} />
-                    ))}
-                  </>
-                ) : null
+                <div className={topicsExpand[topicIndex] ? 'block' : 'hidden'}>
+                  {topic.feedContent.map((feed, index) => (
+                    <WeiboCard key={index} referer={topic.link} feed={feed} />
+                  ))}
+                </div>
               ) : null}
             </>
           )}
