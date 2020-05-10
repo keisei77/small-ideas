@@ -1,5 +1,6 @@
 import React from 'react';
 import getConfig from 'next/config';
+import ImageView from './ImageView';
 interface FeedMedia {
   content: string;
   images?: { thumbSrc: string; originSrc: string }[];
@@ -14,20 +15,20 @@ const { publicRuntimeConfig } = getConfig();
 const WeiboCard = (props: WeiboCard) => {
   const { feed, referer } = props;
   return (
-    <p className="mt-2 rounded-sm border bg-white p-4 text-purple-900 text-sm">
+    <div className="mt-2 rounded-sm border bg-white p-4 text-purple-900 text-sm">
       {feed.content}
-      {(feed.images || []).map(
-        ({ thumbSrc, originSrc }) =>
-          originSrc && (
-            <img
-              onError={(ev) => {
-                (ev.target as any).src = thumbSrc;
-              }}
-              src={`${publicRuntimeConfig.weiboImg}?src=${originSrc}&referer=${referer}`}
-              alt={feed.content}
-            />
-          )
-      )}
+      <div className="flex flex-wrap justify-around">
+        {(feed.images || []).map(
+          ({ thumbSrc, originSrc }) =>
+            originSrc && (
+              <ImageView
+                thumbImage={`${publicRuntimeConfig.weiboImg}?src=${thumbSrc}&referer=${referer}`}
+                originImage={`${publicRuntimeConfig.weiboImg}?src=${originSrc}&referer=${referer}`}
+                alternateInfo={feed.content}
+              />
+            )
+        )}
+      </div>
       {feed.video && (
         <video controls>
           <source
@@ -36,7 +37,7 @@ const WeiboCard = (props: WeiboCard) => {
           ></source>
         </video>
       )}
-    </p>
+    </div>
   );
 };
 
