@@ -9,16 +9,20 @@ const Layout = ({ children }) => {
     () => [
       {
         label: '首页',
-        link: '/'
+        link: '/',
       },
       {
         label: '疫情',
-        link: '/ncov'
+        link: '/ncov',
       },
       {
         label: '热搜',
-        link: '/weibo'
-      }
+        link: '/weibo',
+      },
+      {
+        label: '拼图',
+        link: '/jigsaw',
+      },
     ],
     []
   );
