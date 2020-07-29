@@ -65,7 +65,7 @@ const Weibo = (props) => {
         <li className="my-4" key={topic.title}>
           <a
             onClick={() => updateTopicsExpand(topic.link, topicIndex)}
-            className="cursor-pointer text-xl text-indigo-500 flex items-center justify-between"
+            className="sticky top-12 bg-gray-100 cursor-pointer text-xl text-indigo-500 flex items-center justify-between"
           >
             <span>{topic.title}</span>
             {topicsExpand[topicIndex] ? <ChevronDown /> : <ChevronRight />}
