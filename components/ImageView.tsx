@@ -14,8 +14,12 @@ const ImageView = React.memo(function ImageView(props: ImageView) {
     setIsShow((isShow) => !isShow);
   }, []);
   return (
-    <span>
-      <img className="w-24" src={thumbImage} onClick={onClose} />
+    <span className="m-2">
+      <img
+        className="h-24 w-24 object-cover"
+        src={thumbImage}
+        onClick={onClose}
+      />
       <Popup
         isShow={isShow}
         onClose={onClose}

@@ -17,7 +17,7 @@ const WeiboCard = (props: WeiboCard) => {
   return (
     <div className="mt-2 rounded-sm border bg-white p-4 text-purple-900 text-sm">
       {feed.content}
-      <div className="flex flex-wrap justify-around">
+      <div className="flex flex-wrap">
         {(feed.images || []).map(
           ({ thumbSrc, originSrc }) =>
             originSrc && (
