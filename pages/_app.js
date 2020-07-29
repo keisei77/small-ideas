@@ -19,10 +19,10 @@ const Layout = ({ children }) => {
         label: '热搜',
         link: '/weibo',
       },
-      {
-        label: '拼图',
-        link: '/jigsaw',
-      },
+      // {
+      //   label: '拼图',
+      //   link: '/jigsaw',
+      // },
     ],
     []
   );
