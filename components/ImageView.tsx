@@ -16,7 +16,7 @@ const ImageView = React.memo(function ImageView(props: ImageView) {
   return (
     <span className="m-2">
       <img
-        className="h-24 w-24 object-cover"
+        className="h-20 w-20 object-cover"
         src={thumbImage}
         onClick={onClose}
       />

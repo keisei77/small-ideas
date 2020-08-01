@@ -60,7 +60,7 @@ const Weibo = (props) => {
   }, []);
 
   return (
-    <ol className="bg-gray-100 inline-block px-8 w-full">
+    <ol className="bg-gray-100 inline-block px-4 w-full">
       {fullData.map((topic, topicIndex) => (
         <li className="my-4" key={topic.title}>
           <a
