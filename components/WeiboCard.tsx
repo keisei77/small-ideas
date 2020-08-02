@@ -1,10 +1,10 @@
 import React from 'react';
 import getConfig from 'next/config';
-import ImageView from './ImageView';
+import ImageView, { ImageSource } from './ImageView';
 interface FeedMedia {
   userInfo: { avatar: string; nickname: string };
   content: string;
-  images?: { thumbSrc: string; originSrc: string }[];
+  images?: ImageSource[];
   video?: string;
 }
 
@@ -26,11 +26,12 @@ const WeiboCard = (props: WeiboCard) => {
         {feed.content}
         <div className="flex flex-wrap">
           {(feed.images || []).map(
-            ({ thumbSrc, originSrc }) =>
+            ({ thumbSrc, originSrc }, index) =>
               originSrc && (
                 <ImageView
-                  thumbImage={`${publicRuntimeConfig.weiboImg}?src=${thumbSrc}&referer=${referer}`}
-                  originImage={`${publicRuntimeConfig.weiboImg}?src=${originSrc}&referer=${referer}`}
+                  images={feed.images}
+                  initialSlide={index}
+                  currentImg={`${publicRuntimeConfig.weiboImg}?src=${thumbSrc}&referer=${referer}`}
                   alternateInfo={feed.content}
                 />
               )

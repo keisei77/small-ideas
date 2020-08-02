@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import App from 'next/app';
 import './css/tailwind.css';
+import 'swiper/swiper-bundle.min.css';
 import Nav from '../components/Nav';
 import Footer from '../components/Footer';
 
