@@ -37,9 +37,6 @@ const nextConfig = {
       process.env.NODE_ENV === 'production'
         ? 'https://micro-backend.herokuapp.com/assets'
         : 'http://localhost:4000/assets',
-    weiboLargeImg:process.env.NODE_ENV === 'production'
-    ? 'https://micro-backend.herokuapp.com/assets-large'
-    : 'http://localhost:4000/assets-large',
   },
 };
 

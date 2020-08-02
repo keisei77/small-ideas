@@ -20,19 +20,21 @@ const ImageView = React.memo(function ImageView(props: ImageView) {
         src={thumbImage}
         onClick={onClose}
       />
-      <Popup
-        isShow={isShow}
-        onClose={onClose}
-        content={
-          <img
-            onError={(ev) => {
-              (ev.target as any).src = thumbImage;
-            }}
-            src={originImage}
-            alt={alternateInfo}
-          />
-        }
-      />
+      {isShow ? (
+        <Popup
+          isShow={isShow}
+          onClose={onClose}
+          content={
+            <img
+              onError={(ev) => {
+                (ev.target as any).src = thumbImage;
+              }}
+              src={originImage}
+              alt={alternateInfo}
+            />
+          }
+        />
+      ) : null}
     </span>
   );
 });

@@ -30,7 +30,7 @@ const WeiboCard = (props: WeiboCard) => {
               originSrc && (
                 <ImageView
                   thumbImage={`${publicRuntimeConfig.weiboImg}?src=${thumbSrc}&referer=${referer}`}
-                  originImage={`${publicRuntimeConfig.weiboLargeImg}?src=${originSrc}`}
+                  originImage={`${publicRuntimeConfig.weiboImg}?src=${originSrc}&referer=${referer}`}
                   alternateInfo={feed.content}
                 />
               )
