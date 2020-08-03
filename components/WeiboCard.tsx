@@ -15,6 +15,11 @@ interface WeiboCard {
 const { publicRuntimeConfig } = getConfig();
 const WeiboCard = (props: WeiboCard) => {
   const { feed, referer } = props;
+  const rawImages = feed.images || [];
+  const formattedImages = rawImages.map(({ thumbSrc, originSrc }) => ({
+    thumbSrc: `${publicRuntimeConfig.weiboImg}?src=${thumbSrc}&referer=${referer}`,
+    originSrc: `${publicRuntimeConfig.weiboImg}?src=${originSrc}&referer=${referer}`,
+  }));
   const { userInfo } = feed;
   return (
     <div className="mt-2 rounded-sm border bg-white p-4 text-purple-900 text-sm">
@@ -25,13 +30,13 @@ const WeiboCard = (props: WeiboCard) => {
       <div>
         {feed.content}
         <div className="flex flex-wrap">
-          {(feed.images || []).map(
+          {formattedImages.map(
             ({ thumbSrc, originSrc }, index) =>
               originSrc && (
                 <ImageView
                   images={feed.images}
                   initialSlide={index}
-                  currentImg={`${publicRuntimeConfig.weiboImg}?src=${thumbSrc}&referer=${referer}`}
+                  currentImg={thumbSrc}
                   alternateInfo={feed.content}
                 />
               )
