@@ -34,7 +34,7 @@ const WeiboCard = (props: WeiboCard) => {
             ({ thumbSrc, originSrc }, index) =>
               originSrc && (
                 <ImageView
-                  images={feed.images}
+                  images={formattedImages}
                   initialSlide={index}
                   currentImg={thumbSrc}
                   alternateInfo={feed.content}
