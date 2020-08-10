@@ -1,4 +1,5 @@
 import React, { useState, useCallback } from 'react';
+import { Input } from 'antd';
 import ReactDOM from 'react-dom';
 import fetch from 'isomorphic-unfetch';
 import getConfig from 'next/config';
@@ -6,7 +7,7 @@ import Loading from '../components/Loading';
 import ChevronRight from '../components/ChevronRight';
 import ChevronDown from '../components/ChevronDown';
 import WeiboCard from '../components/WeiboCard';
-
+const { Search } = Input;
 const { publicRuntimeConfig } = getConfig();
 const Weibo = (props) => {
   const data = props.data;
@@ -59,36 +60,51 @@ const Weibo = (props) => {
     });
   }, []);
 
+  const onSearch = useCallback((value: string) => {
+    console.log(value);
+  }, []);
+
   return (
-    <ol className="bg-gray-100 inline-block px-4 w-full">
-      {fullData.map((topic, topicIndex) => (
-        <li className="my-4" key={topic.title}>
-          <a
-            onClick={() => updateTopicsExpand(topic.link, topicIndex)}
-            className="sticky top-12 bg-gray-100 cursor-pointer text-xl text-indigo-500 flex items-center justify-between"
-          >
-            <span>{topic.title}</span>
-            {topicsExpand[topicIndex] ? <ChevronDown /> : <ChevronRight />}
-          </a>
-          {loading[topicIndex] ? (
-            <Loading />
-          ) : (
-            <>
-              {topic.lead ? (
-                <div className="pt-1 text-xs text-gray-500">{topic.lead}</div>
-              ) : null}
-              {topic.feedContent && topic.feedContent.length ? (
-                <div className={topicsExpand[topicIndex] ? 'block' : 'hidden'}>
-                  {topic.feedContent.map((feed, index) => (
-                    <WeiboCard key={index} referer={topic.link} feed={feed} />
-                  ))}
-                </div>
-              ) : null}
-            </>
-          )}
-        </li>
-      ))}
-    </ol>
+    <>
+      <Search
+        placeholder="输入关键词"
+        size="large"
+        allowClear
+        enterButton
+        onSearch={onSearch}
+      />
+      <ol className="bg-gray-100 inline-block px-4 w-full">
+        {fullData.map((topic, topicIndex) => (
+          <li className="my-4" key={topic.title}>
+            <a
+              onClick={() => updateTopicsExpand(topic.link, topicIndex)}
+              className="sticky top-12 bg-gray-100 cursor-pointer text-xl text-indigo-500 flex items-center justify-between"
+            >
+              <span>{topic.title}</span>
+              {topicsExpand[topicIndex] ? <ChevronDown /> : <ChevronRight />}
+            </a>
+            {loading[topicIndex] ? (
+              <Loading />
+            ) : (
+              <>
+                {topic.lead ? (
+                  <div className="pt-1 text-xs text-gray-500">{topic.lead}</div>
+                ) : null}
+                {topic.feedContent && topic.feedContent.length ? (
+                  <div
+                    className={topicsExpand[topicIndex] ? 'block' : 'hidden'}
+                  >
+                    {topic.feedContent.map((feed, index) => (
+                      <WeiboCard key={index} referer={topic.link} feed={feed} />
+                    ))}
+                  </div>
+                ) : null}
+              </>
+            )}
+          </li>
+        ))}
+      </ol>
+    </>
   );
 };
 
