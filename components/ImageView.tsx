@@ -36,7 +36,7 @@ const ImageView = React.memo(function ImageView(props: ImageView) {
             <Swiper initialSlide={initialSlide}>
               {images.map(({ thumbSrc, originSrc }) => {
                 return (
-                  <SwiperSlide>
+                  <SwiperSlide key={thumbSrc}>
                     <img
                       className="w-full"
                       onError={(ev) => {

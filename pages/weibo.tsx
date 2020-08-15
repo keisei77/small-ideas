@@ -1,15 +1,46 @@
-import React, { useState, useCallback } from 'react';
-import { Input } from 'antd';
+import React, { useState, useCallback, useReducer } from 'react';
+import { Input, Modal } from 'antd';
 import ReactDOM from 'react-dom';
 import fetch from 'isomorphic-unfetch';
 import getConfig from 'next/config';
 import Loading from '../components/Loading';
 import ChevronRight from '../components/ChevronRight';
 import ChevronDown from '../components/ChevronDown';
-import WeiboCard from '../components/WeiboCard';
+import WeiboTopic, { TopicInfo } from '../components/WeiboTopic';
 const { Search } = Input;
 const { publicRuntimeConfig } = getConfig();
-const Weibo = (props) => {
+
+interface SearchInfo {
+  value: string;
+  isShowSearch: boolean;
+  data: TopicInfo;
+}
+
+interface ActionType {
+  type: 'toggleSearchModal' | 'searchValue' | 'feed';
+  payload?: Partial<SearchInfo>;
+}
+
+const reducer = (state: SearchInfo, action: ActionType) => {
+  switch (action.type) {
+    case 'toggleSearchModal':
+      return { ...state, isShowSearch: !state.isShowSearch };
+    case 'searchValue':
+      return { ...state, value: action.payload.value };
+    case 'feed':
+      return { ...state, data: action.payload.data };
+    default:
+      return state;
+  }
+};
+
+const initialSearchInfo: SearchInfo = {
+  value: '',
+  isShowSearch: false,
+  data: null,
+};
+
+const Weibo = React.memo(function Weibo(props: any) {
   const data = props.data;
   const [fullData, setFullData] = useState(data);
   const [topicsExpand, setTopicsExpand] = useState<boolean[]>(
@@ -18,6 +49,8 @@ const Weibo = (props) => {
   const [loading, setLoading] = useState<boolean[]>(
     Array(data.length).fill(false)
   );
+
+  const [searchInfo, dispatch] = useReducer(reducer, initialSearchInfo);
 
   const updateTopicsExpand = useCallback(
     async (link, topicIndex) => {
@@ -60,8 +93,33 @@ const Weibo = (props) => {
     });
   }, []);
 
-  const onSearch = useCallback((value: string) => {
-    console.log(value);
+  const onSearch = useCallback(async (value: string) => {
+    if (!value) {
+      return;
+    }
+
+    const weiboDetailData = await fetch(
+      `${publicRuntimeConfig.baseAPI}/weibo-detail?link=${encodeURIComponent(
+        `https://s.weibo.com/weibo?q=${encodeURIComponent(value)}`
+      )}`
+    );
+    const weiboDetail = await weiboDetailData.json();
+
+    dispatch({ type: 'toggleSearchModal' });
+    dispatch({ type: 'searchValue', payload: { value } });
+    dispatch({
+      type: 'feed',
+      payload: {
+        data: {
+          ...weiboDetail,
+          link: `https://s.weibo.com/weibo?q=${encodeURIComponent(value)}`,
+        },
+      },
+    });
+  }, []);
+
+  const onRequestCancel = useCallback(() => {
+    dispatch({ type: 'toggleSearchModal' });
   }, []);
 
   return (
@@ -73,6 +131,16 @@ const Weibo = (props) => {
         enterButton
         onSearch={onSearch}
       />
+
+      <Modal
+        title={`搜索：${searchInfo.value}`}
+        visible={searchInfo.isShowSearch}
+        onCancel={onRequestCancel}
+        footer={null}
+      >
+        <WeiboTopic topic={searchInfo.data} />
+      </Modal>
+
       <ol className="bg-gray-100 inline-block px-4 w-full">
         {fullData.map((topic, topicIndex) => (
           <li className="my-4" key={topic.title}>
@@ -86,27 +154,19 @@ const Weibo = (props) => {
             {loading[topicIndex] ? (
               <Loading />
             ) : (
-              <>
-                {topic.lead ? (
-                  <div className="pt-1 text-xs text-gray-500">{topic.lead}</div>
-                ) : null}
-                {topic.feedContent && topic.feedContent.length ? (
-                  <div
-                    className={topicsExpand[topicIndex] ? 'block' : 'hidden'}
-                  >
-                    {topic.feedContent.map((feed, index) => (
-                      <WeiboCard key={index} referer={topic.link} feed={feed} />
-                    ))}
-                  </div>
-                ) : null}
-              </>
+              <WeiboTopic
+                topic={topic}
+                contentClassNames={
+                  topicsExpand[topicIndex] ? 'block' : 'hidden'
+                }
+              />
             )}
           </li>
         ))}
       </ol>
     </>
   );
-};
+});
 
 export async function getServerSideProps() {
   const weiboDataResponse = await fetch(`${publicRuntimeConfig.baseAPI}/weibo`);

@@ -1,7 +1,7 @@
 import React from 'react';
 import getConfig from 'next/config';
 import ImageView, { ImageSource } from './ImageView';
-interface FeedMedia {
+export interface FeedMedia {
   userInfo: { avatar: string; nickname: string };
   content: string;
   images?: ImageSource[];
