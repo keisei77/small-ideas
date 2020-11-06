@@ -14,7 +14,7 @@
   "dependencies": {
     "@antv/data-set": "^0.11.1",
     "antd": "^4.5.3",
-    "autoprefixer": "^9.7.4",
+    "autoprefixer": "^9.8.6",
     "bizcharts": "^3.5.8",
     "classnames": "^2.2.6",
     "cross-env": "^7.0.2",
