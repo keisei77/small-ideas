@@ -15,7 +15,7 @@
     "@antv/data-set": "^0.11.1",
     "antd": "^4.5.3",
     "autoprefixer": "^9.7.4",
-    "bizcharts": "^3.5.8",
+    "bizcharts": "^4.0.15",
     "classnames": "^2.2.6",
     "cross-env": "^7.0.2",
     "isomorphic-unfetch": "^3.0.0",
